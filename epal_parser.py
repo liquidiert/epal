@@ -33,13 +33,11 @@ def epal_parser():
                             class_args = line[2:]
                         else:
                             class_args = ""
-                        parse_file.write("class " + line[index + 1] + " (" + class_args + ") {\n\t")
+                        parse_file.write("class " + line[index + 1] + " (" + class_args +
+                                         ") {\n\tprivate:\n\t")  # classes are per default private
                         index += 1
                     elif word == "public":
                         parsed_file.write("public:\n\t")
-                        index += 1
-                    elif word == "private":
-                        parsed_file.write("private:\n\t")
                         index += 1
                     elif word == "main":
                         parsed_file.write("int main() {\n")
