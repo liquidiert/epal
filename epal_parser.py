@@ -28,6 +28,17 @@ def epal_parser():
                             value = word
                             parsed_file.write(value + ";\n")
                         index += 1
+                    elif word == "class": # class section
+                        if line[2:] is not None:
+                            class_args = line[2:]
+                        else:
+                            class_args = ""
+                        parse_file.write("class " + line[index + 1] + " (" + class_args +
+                                         ") {\n\tprivate:\n\t")  # classes are per default private
+                        index += 1
+                    elif word == "public":
+                        parsed_file.write("public:\n\t")
+                        index += 1
                     elif word == "main":
                         parsed_file.write("int main() {\n")
                         index += 1
@@ -51,7 +62,7 @@ def epal_parser():
                         index += 1
                     elif word == "in":
                         index += 1
-                    elif word == "range":
+                    elif word == "range": # end loop section
                         index += 1
                     elif word == ":":
                         index += 1
@@ -108,6 +119,7 @@ def epal_parser():
                         index += 1
                     elif word == "break":
                         parsed_file.write("\tbreak;\n")
+                        index += 1
                     elif word == "case":
                         parsed_file.write("case " + str(line[index + 1]) + ":\n")
                         index += 1
