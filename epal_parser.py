@@ -126,6 +126,7 @@ def epal_parser():
                     elif word == "//":
                         parsed_file.write("//")
                         index += 1
+
                     else:
                         if print_case:
                             print_case = False
