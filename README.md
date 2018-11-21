@@ -36,7 +36,7 @@ main
             break
     end
     print scur
-   
+```
 ## Upcoming features
 
 - comments
