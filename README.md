@@ -17,7 +17,7 @@ programming languages while also having the nice abilty of OOP
 
 This is an example of what epal can do up to this day (the example will change according 
 to the development of epal)
-'main
+```main
     scur is 5
     do loop for i in range 20
         if i % 2 equals 0
@@ -33,4 +33,4 @@ to the development of epal)
             print noooo
             break
     end
-    print scur'
+    print scur
