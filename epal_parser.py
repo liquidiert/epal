@@ -1,7 +1,7 @@
 import sys
 import re
 import os
- 
+
  
 def epal_parser():
     args = sys.argv[1:]
@@ -16,7 +16,9 @@ def epal_parser():
             if_case = False
             switch = False
             pre_line = None
+            block_comment = False
             class_declaration = False
+            current_tabs = 0
             for line in parse_file:
                 index = 0
                 line = line.split()
@@ -25,9 +27,16 @@ def epal_parser():
                         if not keep_values_safe and not in_loop:
                             value = word
                             parsed_file.write(value + ";\n")
-                        elif line[index - 1] == "+" or line[index - 1] == "plus" and if_case:
+                        elif line[index - 1] == "+" or line[index - 1] == "add" and if_case:
                             value = word
                             parsed_file.write(value + ";\n")
+                        index += 1
+                    elif ' ' in line:
+                        if len(line) > 3:
+                            if line[index - 1] == " " or line[index + 1] == " ":
+                                current_tabs += 1
+                        else:
+                            current_tabs += 1
                         index += 1
                     elif word == "class":  # class section
                         if line[2:] is not None:
@@ -35,13 +44,20 @@ def epal_parser():
                         else:
                             class_args = ""
                         parse_file.write("class " + line[index + 1] + " (" + class_args +
-                                         ") {\n\tprivate:\n\t")  # classes are per default private
+                                         ") {\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write("private:\n")  # classes are per default private
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         class_declaration = True
                         index += 1
                     elif word == "public":
-                        parsed_file.write("public:\n\t")
+                        parsed_file.write("public:\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         index += 1
-                    elif word == "main":
+                    elif word == "main":  # main section
                         parsed_file.write("int main() {\n")
                         index += 1
                     elif word == "is" or word == "=":  # operators
@@ -59,15 +75,15 @@ def epal_parser():
                     elif word == "div" or word == "/":
                         parsed_file.write(" / ")
                         index += 1
-                    elif word == "modulo" or word == "%":
+                    elif word == "mod" or word == "%":
                         if not keep_values_safe and not if_case:
                             parsed_file.write(" % ")
                         index += 1
-                    elif word == "==" or word == "equals":
+                    elif word == "equals" or word == "==":
                         if not keep_values_safe and not if_case:
                             parsed_file.write(" == ")
                         index += 1
-                    elif word == "nequal" or word != "!=":
+                    elif word == "nequal" or word == "!=":
                         parsed_file.write(" != ")
                         index += 1
                     elif word == "and" or word == "&&":
@@ -79,12 +95,19 @@ def epal_parser():
                     elif word == "end":
                         if switch:
                             switch = False
-                            parsed_file.write('\tdefault:\n\tcout << "Switch case error" << endl;\n}')
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write('default:\n\tcout << "Switch case error" << endl;\n}')
                         elif class_declaration:
                             class_declaration = False
                             parsed_file.write("};\n")
+                        elif block_comment:
+                            block_comment = False
+                            parsed_file.write("\n*/\n")
                         else:
-                            parsed_file.write("\t}\n")
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write("}\n")
 
                         keep_values_safe = False
                         in_loop = False
@@ -102,10 +125,18 @@ def epal_parser():
                     elif word == "loop":  # loop section
                         variable_name = line[index + 2]
                         if "for" in line:
-                            parsed_file.write("\tfor (int " + variable_name + " = 0; " + variable_name
-                                              + " < " + line[index + 5] + "; " + variable_name + "++) {\n\t")
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write("for (int " + variable_name + " = 0; " + variable_name
+                                              + " < " + line[index + 5] + "; " + variable_name + "++) {\n")
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
                         else:
-                            parsed_file.write("\n\twhile (" + variable_name + " < " + line[index + 5] + "{\n\t")
+                            for i in range((current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write("\nwhile (" + variable_name + " < " + line[index + 5] + "{\n")
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
                         keep_values_safe = True
                         in_loop = True
                         index += 1
@@ -113,23 +144,39 @@ def epal_parser():
                         if_case = True
                         conditions = " ".join(line[1:])
                         conditions = conditions.replace("equals", " == ")
-                        parsed_file.write("\tif (")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write("if (")
                         parsed_file.write(conditions)
-                        parsed_file.write(") {\n\t")
+                        parsed_file.write(") {\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         index += 1
                     elif word == "else":
-                        parsed_file.write("\telse {\n\t")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write("else {\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         index += 1
                     elif word == "elif":
                         conditions = " ".join(line[1:])
                         conditions = conditions.replace("equals", " == ")
-                        parsed_file.write("\t else if (" + conditions + ") {\n\t")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write(" else if (" + conditions + ") {\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         index += 1
                     elif word == "print":  # builtins
                         if line[index + 1] in vars:
-                            parsed_file.write("\tcout << " + line[index + 1] + " << endl;\n")
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write("cout << " + line[index + 1] + " << endl;\n")
                         else:
-                            parsed_file.write('\tcout << "' + line[index + 1] + '" << endl;\n')
+                            for i in range(int(current_tabs/4)):
+                                parsed_file.write("\t")
+                            parsed_file.write('cout << "' + line[index + 1] + '" << endl;\n')
                         print_case = True
                         index += 1
                     elif word == "switch":  # switch section
@@ -137,10 +184,16 @@ def epal_parser():
                         if_case = True
                         in_loop = True
                         switch = True
-                        parsed_file.write("switch (" + str(line[index + 1]) + ") {\n\t")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write("switch (" + str(line[index + 1]) + ") {\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
                         index += 1
                     elif word == "break":
-                        parsed_file.write("\tbreak;\n")
+                        for i in range(int(current_tabs/4)):
+                            parsed_file.write("\t")
+                        parsed_file.write("break;\n")
                         index += 1
                     elif word == "case":
                         parsed_file.write("case " + str(line[index + 1]) + ":\n")
@@ -148,6 +201,11 @@ def epal_parser():
                     elif word == "//":  # comment section
                         parsed_file.write("//")
                         index += 1
+                    elif word == "/*":
+                        block_comment = True
+                        parsed_file.write("/*")
+                        index += 1
+
                     else:  # default case
                         if print_case:
                             print_case = False
@@ -161,11 +219,15 @@ def epal_parser():
                                     except:
                                         pass
                                     if isinstance(test_value, int):
-                                        parsed_file.write("\tint ")
+                                        for i in range(int(current_tabs/4)):
+                                            parsed_file.write("\t")
+                                        parsed_file.write("int ")
                                         parsed_file.write(variable_name)
                                         vars.append(variable_name)
                                     elif isinstance(line[index + 2], str):
-                                        parsed_file.write("\tchar *")
+                                        for i in range(int(current_tabs/4)):
+                                            parsed_file.write("\t")
+                                        parsed_file.write("char *")
                                         parsed_file.write(variable_name)
                                         parsed_file.write("[" + str(len(word)) + "]")
                                         vars.append(variable_name)
@@ -174,11 +236,14 @@ def epal_parser():
                                     vars.append(variable_name)
                             else:
                                 if word not in pre_line:
-                                    parsed_file.write("\t" + variable_name)
+                                    for i in range(int(current_tabs/4)):
+                                        parsed_file.write("\t")
+                                    parsed_file.write(variable_name)
                                     vars.append(variable_name)
                         index += 1
                 pre_line = line
                 keep_values_safe = False
+                current_tabs = 0
             parsed_file.write("\treturn 0;\n}")
     os.system("g++ -std=c++17 " + cpp_output[0] + ".cpp -o " + sys.argv[2])
  
