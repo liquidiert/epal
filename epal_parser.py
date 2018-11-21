@@ -16,11 +16,12 @@ def epal_parser():
             if_case = False
             switch = False
             pre_line = None
+            class_declaration = False
             for line in parse_file:
                 index = 0
                 line = line.split()
                 for word in line:
-                    if re.match("[0-9]", word):
+                    if re.match("[0-9]", word):  # special characters section
                         if not keep_values_safe and not in_loop:
                             value = word
                             parsed_file.write(value + ";\n")
@@ -28,13 +29,14 @@ def epal_parser():
                             value = word
                             parsed_file.write(value + ";\n")
                         index += 1
-                    elif word == "class": # class section
+                    elif word == "class":  # class section
                         if line[2:] is not None:
                             class_args = line[2:]
                         else:
                             class_args = ""
                         parse_file.write("class " + line[index + 1] + " (" + class_args +
                                          ") {\n\tprivate:\n\t")  # classes are per default private
+                        class_declaration = True
                         index += 1
                     elif word == "public":
                         parsed_file.write("public:\n\t")
@@ -42,12 +44,61 @@ def epal_parser():
                     elif word == "main":
                         parsed_file.write("int main() {\n")
                         index += 1
-                    elif word == "is" or word == "=":
+                    elif word == "is" or word == "=":  # operators
                         parsed_file.write(" = ")
                         index += 1
-                    elif word == "do":
+                    elif word == "add" or word == "+":
+                        parsed_file.write(" + ")
+                        index += 1
+                    elif word == "sub" or word == "-":
+                        parsed_file.write(" - ")
+                        index += 1
+                    elif word == "mul" or word == "*":
+                        parsed_file.write(" * ")
+                        index += 1
+                    elif word == "div" or word == "/":
+                        parsed_file.write(" / ")
+                        index += 1
+                    elif word == "modulo" or word == "%":
+                        if not keep_values_safe and not if_case:
+                            parsed_file.write(" % ")
+                        index += 1
+                    elif word == "==" or word == "equals":
+                        if not keep_values_safe and not if_case:
+                            parsed_file.write(" == ")
+                        index += 1
+                    elif word == "nequal" or word != "!=":
+                        parsed_file.write(" != ")
+                        index += 1
+                    elif word == "and" or word == "&&":
+                        parsed_file.write(" && ")
+                        index += 1
+                    elif word == "or" or word == "||":
+                        parsed_file.write("||")
+                        index += 1
+                    elif word == "end":
+                        if switch:
+                            switch = False
+                            parsed_file.write('\tdefault:\n\tcout << "Switch case error" << endl;\n}')
+                        elif class_declaration:
+                            class_declaration = False
+                            parsed_file.write("};\n")
+                        else:
+                            parsed_file.write("\t}\n")
+
+                        keep_values_safe = False
+                        in_loop = False
+                        if_case = False
+                        index += 1
+                    elif word == "do":  # useless words
                         index += 1
                         pass
+                    elif word == "for":
+                        index += 1
+                    elif word == "in":
+                        index += 1
+                    elif word == "range":
+                        index += 1
                     elif word == "loop":  # loop section
                         variable_name = line[index + 2]
                         if "for" in line:
@@ -58,35 +109,7 @@ def epal_parser():
                         keep_values_safe = True
                         in_loop = True
                         index += 1
-                    elif word == "for":
-                        index += 1
-                    elif word == "in":
-                        index += 1
-                    elif word == "range": # end loop section
-                        index += 1
-                    elif word == ":":
-                        index += 1
-                    elif word == "plus" or word == "+":
-                        parsed_file.write(" + ")
-                        index += 1
-                    elif word == "end":
-                        if switch:
-                            switch = False
-                            parsed_file.write('\tdefault:\n\tcout << "Switch case error" << endl;\n}')
-                        else:
-                            parsed_file.write("\t}\n")
-                        keep_values_safe = False
-                        in_loop = False
-                        if_case = False
-                        index += 1
-                    elif word == "print":
-                        if line[index + 1] in vars:
-                            parsed_file.write("\tcout << " + line[index + 1] + " << endl;\n")
-                        else:
-                            parsed_file.write('\tcout << "' + line[index + 1] + '" << endl;\n')
-                        print_case = True
-                        index += 1
-                    elif word == "if":
+                    elif word == "if":  # if section
                         if_case = True
                         conditions = " ".join(line[1:])
                         conditions = conditions.replace("equals", " == ")
@@ -102,15 +125,14 @@ def epal_parser():
                         conditions = conditions.replace("equals", " == ")
                         parsed_file.write("\t else if (" + conditions + ") {\n\t")
                         index += 1
-                    elif word == "modulo" or word == "%":
-                        if not keep_values_safe and not if_case:
-                            parsed_file.write("%")
+                    elif word == "print":  # builtins
+                        if line[index + 1] in vars:
+                            parsed_file.write("\tcout << " + line[index + 1] + " << endl;\n")
+                        else:
+                            parsed_file.write('\tcout << "' + line[index + 1] + '" << endl;\n')
+                        print_case = True
                         index += 1
-                    elif word == "==" or word == "equals":
-                        if not keep_values_safe and not if_case:
-                            parsed_file.write(" == ")
-                        index += 1
-                    elif word == "switch":
+                    elif word == "switch":  # switch section
                         keep_values_safe = True
                         if_case = True
                         in_loop = True
@@ -123,11 +145,10 @@ def epal_parser():
                     elif word == "case":
                         parsed_file.write("case " + str(line[index + 1]) + ":\n")
                         index += 1
-                    elif word == "//":
+                    elif word == "//":  # comment section
                         parsed_file.write("//")
                         index += 1
-
-                    else:
+                    else:  # default case
                         if print_case:
                             print_case = False
                         elif not keep_values_safe:
