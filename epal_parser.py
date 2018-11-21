@@ -1,18 +1,3 @@
-"""
-Parser for epal, your friendly, new programming language!
-epal code is easy to write and understand!
-This parser parses epal code to c++ code and compiles it to binary
-It also can be executed as pure python module
-When called in CLI, command should be like following example:
-python epal_parser.py [epal_file] [binary_filename]
-epal will be constantly developed and is easily extendable!
- 
------------------------------------------------------------
-Why C++ as bridge?
- 
-I'm using C++ as bridge because it's one of the fastest 
-programming languages while also having the nice abilty of OOP
-"""
 import sys
 import re
 import os
