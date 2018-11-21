@@ -34,6 +34,7 @@ def epal_parser():
                         else:
                             class_args = ""
                         parse_file.write("class " + line[index + 1] + " (" + class_args + ") {\n\t")
+                        
                         index += 1
                     elif word == "main":
                         parsed_file.write("int main() {\n")
