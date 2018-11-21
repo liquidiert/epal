@@ -28,6 +28,13 @@ def epal_parser():
                             value = word
                             parsed_file.write(value + ";\n")
                         index += 1
+                    elif word == "class": # class section
+                        if line[2:] is not None:
+                            class_args = line[2:]
+                        else:
+                            class_args = ""
+                        parse_file.write("class " + line[index + 1] + " (" + class_args + ") {\n\t")
+                        index += 1
                     elif word == "main":
                         parsed_file.write("int main() {\n")
                         index += 1
@@ -51,7 +58,7 @@ def epal_parser():
                         index += 1
                     elif word == "in":
                         index += 1
-                    elif word == "range":
+                    elif word == "range": # end loop section
                         index += 1
                     elif word == ":":
                         index += 1
