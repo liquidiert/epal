@@ -1,3 +1,8 @@
-- comments
-- classes
 - functions
+- pointer
+- references 
+- typedef
+- include
+- enum 
+- array
+- list 
