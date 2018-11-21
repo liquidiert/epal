@@ -44,6 +44,12 @@ main
 ```
 ## Upcoming features
 
-- comments
-- classes
 - functions
+- pointer
+- references 
+- typedef
+- include
+- enum 
+- array
+- lists
+- block comments
