@@ -20,17 +20,18 @@ programming languages while also having the nice abilty of OOP
 This is an example of what epal can do up to this day (the example will change according 
 to the development of epal)
 ```
-class
-        privatevar1
+class myfirstepalclass
+        privatevar1 is 0
     public
-        var1
-end
+        var1 is hallo
+end 
+// example comment
 main 
     scur is 5
     do loop for i in range 20
         if i % 2 equals 0
             scur is scur add 1
-            print scur
+            print scur 
         end
     end
     switch scur
@@ -42,6 +43,9 @@ main
             break
     end
     print scur
+/* 
+    and a neatly block comment
+*/
 ```
 ## Upcoming features
 
@@ -53,4 +57,3 @@ main
 - enum 
 - array
 - lists
-- block comments
