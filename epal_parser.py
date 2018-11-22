@@ -10,7 +10,6 @@ def epal_parser():
         cpp_output = str(args[0]).split(".")
         with open(cpp_output[0] + ".cpp", 'w+') as parsed_file:
             parsed_file.write("#include <iostream>\nusing namespace std;\n")
-            keep_values_safe = False
             print_case = False
             in_loop = False
             if_case = False
@@ -41,7 +40,7 @@ def epal_parser():
                 else:
                     for word in line:
                         if re.match("[0-9]", word):  # special characters section
-                            if not keep_values_safe and not in_loop:
+                            if not in_loop:
                                 value = word
                                 parsed_file.write(value + ";\n")
                             elif line[index - 1] == "+" or line[index - 1] == "add" and if_case:
@@ -95,11 +94,11 @@ def epal_parser():
                             parsed_file.write(" / ")
                             index += 1
                         elif word == "mod" or word == "%":
-                            if not keep_values_safe and not if_case:
+                            if not if_case:
                                 parsed_file.write(" % ")
                             index += 1
                         elif word == "equals" or word == "==":
-                            if not keep_values_safe and not if_case:
+                            if not if_case:
                                 parsed_file.write(" == ")
                             index += 1
                         elif word == "nequal" or word == "!=":
@@ -125,7 +124,6 @@ def epal_parser():
                                     parsed_file.write("\t")
                                 parsed_file.write("}\n")
                             current_tabs = 0
-                            keep_values_safe = False
                             in_loop = False
                             if_case = False
                             index += 1
@@ -153,9 +151,9 @@ def epal_parser():
                                 parsed_file.write("\nwhile (" + variable_name + " < " + line[index + 5] + "{\n")
                                 for i in range(int(current_tabs/4)):
                                     parsed_file.write("\t")
-                            keep_values_safe = True
                             in_loop = True
                             index += 1
+                            break
                         elif word == "if":  # if section
                             if_case = True
                             conditions = " ".join(line[1:])
@@ -168,6 +166,7 @@ def epal_parser():
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
                             index += 1
+                            break
                         elif word == "else":
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
@@ -196,7 +195,6 @@ def epal_parser():
                             print_case = True
                             index += 1
                         elif word == "switch":  # switch section
-                            keep_values_safe = True
                             if_case = True
                             in_loop = True
                             switch = True
@@ -206,6 +204,7 @@ def epal_parser():
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
                             index += 1
+                            break
                         elif word == "break":
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
@@ -227,7 +226,7 @@ def epal_parser():
                         else:  # default case
                             if print_case:
                                 print_case = False
-                            elif not keep_values_safe:
+                            else:
                                 variable_name = word
                                 if not in_loop and not if_case:
                                     try:
@@ -263,7 +262,6 @@ def epal_parser():
                                         vars.append(variable_name)
                             index += 1
                 pre_line = line
-                keep_values_safe = False
             parsed_file.write("\treturn 0;\n}")
     os.system("g++ -std=c++17 " + cpp_output[0] + ".cpp -o " + sys.argv[2])
 
