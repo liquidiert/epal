@@ -28,7 +28,7 @@ main
     scur is 5
     do loop for i in range 20
         if i % 2 equals 0
-            scur is scur plus 1
+            scur is scur add 1
             print scur
         end
     end
