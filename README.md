@@ -28,12 +28,17 @@ end
 // example comment
 main 
     scur is 5
-    do loop for i in range 20
+    i is 40
+    do loop i 20
         if i % 2 equals 0
             scur is scur add 1
             print scur 
         end
+        i is i sub 1
     end
+    myclass is myfirstepalclass
+    myclass.var1 is lol
+    print myclass.var1
     switch scur
         case 15
             print sucess
