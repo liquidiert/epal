@@ -47,6 +47,12 @@ main
     and a neatly block comment
 */
 ```
+## Syntax highlighting
+
+Syntax highlighting is supported in Notepad++ (when using Obsidian as theme)
+
+![alt](https://github.com/liquidiert/epal/blob/master/.gitignore/syntax_highlighting.png "syntax highlighting")
+
 ## Upcoming features
 
 - functions
