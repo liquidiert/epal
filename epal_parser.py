@@ -18,6 +18,7 @@ def epal_parser():
             pre_line = None
             block_comment = False
             class_declaration = False
+            end_string = False
             current_tabs = 0
             for line in parse_file:
                 index = 0
@@ -39,12 +40,11 @@ def epal_parser():
                             current_tabs += 1
                         index += 1
                     elif word == "class":  # class section
-                        if line[2:] is not None:
-                            class_args = line[2:]
+                        if not len(line[2:]) == 0:
+                            class_args = "(" + str(line[2:]) + ")"
                         else:
                             class_args = ""
-                        parse_file.write("class " + line[index + 1] + " (" + class_args +
-                                         ") {\n")
+                        parsed_file.write("class " + line[index + 1] + " " + class_args + " {\n")
                         for i in range(int(current_tabs/4)):
                             parsed_file.write("\t")
                         parsed_file.write("private:\n")  # classes are per default private
@@ -52,8 +52,11 @@ def epal_parser():
                             parsed_file.write("\t")
                         class_declaration = True
                         index += 1
+                        break
                     elif word == "public":
-                        parsed_file.write("public:\n")
+                        for i in range(current_tabs):
+                            parsed_file.write("\t")
+                        parsed_file.write("\npublic:\n")
                         for i in range(int(current_tabs/4)):
                             parsed_file.write("\t")
                         index += 1
@@ -108,7 +111,7 @@ def epal_parser():
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
                             parsed_file.write("}\n")
-
+                        current_tabs = 0
                         keep_values_safe = False
                         in_loop = False
                         if_case = False
@@ -227,12 +230,15 @@ def epal_parser():
                                     elif isinstance(line[index + 2], str):
                                         for i in range(int(current_tabs/4)):
                                             parsed_file.write("\t")
-                                        parsed_file.write("char *")
+                                        parsed_file.write("string ")
                                         parsed_file.write(variable_name)
-                                        parsed_file.write("[" + str(len(word)) + "]")
+                                        end_string = True
                                         vars.append(variable_name)
                                 except IndexError:
-                                    parsed_file.write(variable_name)
+                                    if not end_string:
+                                        parsed_file.write(variable_name)
+                                    else:
+                                        parsed_file.write('"' + variable_name + '";\n')
                                     vars.append(variable_name)
                             else:
                                 if word not in pre_line:
@@ -243,7 +249,6 @@ def epal_parser():
                         index += 1
                 pre_line = line
                 keep_values_safe = False
-                current_tabs = 0
             parsed_file.write("\treturn 0;\n}")
     os.system("g++ -std=c++17 " + cpp_output[0] + ".cpp -o " + sys.argv[2])
  
