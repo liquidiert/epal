@@ -1,0 +1,26 @@
+class myfirstepalclass
+        privatevar1 is 0
+    public
+        var1 is hallo
+end 
+// example comment
+main 
+    scur is 5
+    do loop for i in range 20
+        if i % 2 equals 0
+            scur is scur add 1
+            print scur 
+        end
+    end
+    switch scur
+        case 15
+            print sucess
+            break
+        case 1
+            print noooo
+            break
+    end
+    print scur
+/* 
+    and a neatly block comment
+*/
