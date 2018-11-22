@@ -6,4 +6,3 @@
 - enum 
 - array
 - lists
-- block comments
