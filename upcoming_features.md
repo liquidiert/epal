@@ -6,3 +6,4 @@
 - enum 
 - array
 - lists
+- try/catch
