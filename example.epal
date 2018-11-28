@@ -13,10 +13,10 @@ main
             print scur 
         end
         i is i sub 1
-    end 
-    myclass is myfirstepalclass
-    myclass.var1 is lol 
-    print myclass.var1
+    end
+    scurclass is myfirstepalclass
+    scurclass.var1 is lol
+    print scurclass.var1
     switch scur
         case 15
             print sucess
