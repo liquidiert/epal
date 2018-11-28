@@ -68,3 +68,4 @@ Syntax highlighting is supported in Notepad++ (when using Obsidian as theme)[ava
 - enum 
 - array
 - lists
+- try/catch
