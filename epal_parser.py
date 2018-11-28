@@ -3,31 +3,29 @@ import re
 import os
 
 
-def epal_parser():
-    args = sys.argv[1:]
+def epal_parser(filename):
+    if filename is not None:
+        args = [filename, filename.split(".")[0]]
+    else:
+        args = sys.argv[1:]
     variables = []
     classes = []
     functions = []
+    loop_depth_dict = {}
     with open(str(args[0]), 'r') as parse_file:
         cpp_output = str(args[0]).split(".")
         with open(cpp_output[0] + ".cpp", 'w+') as parsed_file:
             parsed_file.write("#include <iostream>\nusing namespace std;\n")
-            in_loop = False
-            if_case = False
-            switch = False
             pre_line = None
-            block_comment = False
             block_comment_index = 0
-            class_declaration = False
-            end_string = False
             current_tabs = 0
             for line in parse_file:
                 index = 0
                 line = line.split()
-                if block_comment:
+                if loop_depth_dict.get("block_comment"):
                     if "end" in line:
                         parsed_file.write("*/\n")
-                        block_comment = False
+                        loop_depth_dict.update({"block_comment": False})
                         break
                     elif block_comment_index == 1:
                         comments = " ".join(line[1:])
@@ -41,13 +39,13 @@ def epal_parser():
                     for word in line:
                         if re.match("[0-9]", word):  # special characters section
                             operator = line[index - 1]
-                            if not in_loop:
+                            if not loop_depth_dict.get("in_loop"):
                                 value = word
                                 parsed_file.write(value + ";\n")
                             elif operator == "+" or operator == "add" or operator == "-" or operator == "sub" \
                                     or operator == "*" or operator == "mul" or operator == "/" or operator == "div" \
                                     or operator == "%" or operator == "mod" or operator == "is" or operator == "="\
-                                    and if_case:
+                                    and loop_depth_dict.get("if_case"):
                                 value = word
                                 parsed_file.write(value + ";\n")
                             index += 1
@@ -70,7 +68,7 @@ def epal_parser():
                             parsed_file.write("private:\n")  # classes are per default private
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
-                            class_declaration = True
+                            loop_depth_dict.update({"class_declaration": True})
                             index += 1
                             break
                         elif word == "public":
@@ -101,11 +99,11 @@ def epal_parser():
                             parsed_file.write(" / ")
                             index += 1
                         elif word == "mod" or word == "%":
-                            if not if_case:
+                            if not loop_depth_dict.get("if_case"):
                                 parsed_file.write(" % ")
                             index += 1
                         elif word == "equals" or word == "==":
-                            if not if_case:
+                            if not loop_depth_dict.get("if_case"):
                                 parsed_file.write(" == ")
                             index += 1
                         elif word == "nequal" or word == "!=":
@@ -118,20 +116,20 @@ def epal_parser():
                             parsed_file.write("||")
                             index += 1
                         elif word == "end":
-                            if switch:
-                                switch = False
+                            if loop_depth_dict.get("switch_case"):
+                                loop_depth_dict.update({"switch_case": False})
                                 for i in range(int(current_tabs/4)):
                                     parsed_file.write("\t")
                                 parsed_file.write('default:\n\tcout << "Switch case error" << endl;\n}\n')
-                            elif class_declaration:
-                                class_declaration = False
+                            elif loop_depth_dict.get("class_declaration"):
+                                loop_depth_dict.update({"class_declaration": False})
                                 parsed_file.write("};\n")
-                            elif in_loop:
+                            elif loop_depth_dict.get("in_loop"):
                                 parsed_file.write("}\n")
-                                in_loop = False
-                            elif if_case:
+                                loop_depth_dict.update({"in_loop": False})
+                            elif loop_depth_dict.get("if_case"):
                                 parsed_file.write("}\n")
-                                if_case = False
+                                loop_depth_dict.update({"if_case": False})
                             else:
                                 for i in range(int(current_tabs/4)):
                                     parsed_file.write("\t")
@@ -170,11 +168,22 @@ def epal_parser():
                                 parsed_file.write("while (" + iter_var + " > " + str(loop_value) + ") {\n")
                                 for i in range(int(current_tabs/4)):
                                     parsed_file.write("\t")
-                            in_loop = True
+                            loop_depth_dict.update({"in_loop": True})
+                            index += 1
+                            break
+                        elif word == "tyb" or word == "try":  # try/catch section
+                            parsed_file.write("try{\n")
+                            break
+                        elif word == "cfh" or word == "catch":
+                            exception_e = None
+                            if line[index + 1:] != "":
+                                exception_e = line[index + 1:]
+                            parsed_file.write("catch (" + " ".join(exception_e) + ") {\n")
+                            loop_depth_dict.update({"in_loop": True})
                             index += 1
                             break
                         elif word == "if":  # if section
-                            if_case = True
+                            loop_depth_dict.update({"if_case": True})
                             conditions = " ".join(line[1:])
                             conditions = conditions.replace("equals", " == ")
                             for i in range(int(current_tabs/4)):
@@ -223,9 +232,9 @@ def epal_parser():
                             index += 1
                             break
                         elif word == "switch":  # switch section
-                            if_case = True
-                            in_loop = True
-                            switch = True
+                            loop_depth_dict.update({"if_case": True})
+                            loop_depth_dict.update({"in_loop": True})
+                            loop_depth_dict.update({"switch_case": True})
                             for i in range(int(current_tabs/4)):
                                 parsed_file.write("\t")
                             parsed_file.write("switch (" + str(line[index + 1]) + ") {\n")
@@ -247,7 +256,7 @@ def epal_parser():
                             index += 1
                             break
                         elif word == "/*":
-                            block_comment = True
+                            loop_depth_dict.update({"block_comment": True})
                             block_comment_index += 1
                             parsed_file.write("/* ")
                             index += 1
@@ -260,7 +269,7 @@ def epal_parser():
                             if class_case:
                                 parsed_file.write(line[index + 2] + " " + word + " = " + line[index + 2] + "();\n")
                                 break
-                            elif not in_loop and not if_case:
+                            elif not loop_depth_dict.get("in_loop") and not loop_depth_dict.get("if_case"):
                                 try:
                                     test_value = None
                                     try:
@@ -277,11 +286,11 @@ def epal_parser():
                                         for i in range(int(current_tabs / 4)):
                                             parsed_file.write("\t")
                                         parsed_file.write("string " + variable_name)
-                                        end_string = True
+                                        loop_depth_dict.update({"end_string": True})
                                         if variable_name not in variables:
                                             variables.append(variable_name)
                                 except IndexError:
-                                    if not end_string:
+                                    if not loop_depth_dict.get("end_string"):
                                         parsed_file.write(variable_name)
                                     else:
                                         parsed_file.write('"' + variable_name + '";\n')
@@ -301,4 +310,4 @@ def epal_parser():
 
 
 if __name__ == "__main__":
-    epal_parser()
+    epal_parser(None)
