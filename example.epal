@@ -7,12 +7,11 @@ end
 main 
     scur is 5
     i is 40
-    do loop i 20
+    do loop for i 20
         if i % 2 equals 0
             scur is scur add 1
             print scur 
         end
-        i is i sub 1
     end
     scurclass is myfirstepalclass
     scurclass.var1 is lol
