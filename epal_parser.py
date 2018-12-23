@@ -363,7 +363,7 @@ def epal_parser(filename):
                             if "." in word:
                                 parsed_file.write(word + " ")
                             elif word == "print_val":
-                                parsed_file.write("cout << *" + line[1] + " << endl;")
+                                parsed_file.write("cout << *" + line[1] + " << endl;\n")
                                 break
                             elif default_case(parsed_file, word, line, loop_depth_dict, variables,
                                             classes, index, current_tabs, pre_line) is False:
