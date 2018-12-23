@@ -11,8 +11,15 @@ main
         if i % 2 equals 0
             scur is scur add 1
             print scur 
+            try
+                print scur
+            cfh exception lulzerror
+                print nope
+            end 
         end
     end
+    ptr ex_ptr to scur
+    print_val ex_ptr
     scurclass is myfirstepalclass
     scurclass.var1 is lol
     print scurclass.var1

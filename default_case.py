@@ -20,27 +20,27 @@ def default_case(parsed_file, word, line, loop_depth_dict, variables, classes, i
                     parsed_file.write("\t")
                 parsed_file.write("int " + variable_name)
                 if variable_name not in variables:
-                    variables.append(variable_name)
+                    variables.update({variable_name: "int"})
             elif isinstance(line[index + 2], str):
                 for i in range(int(current_tabs / 4)):
                     parsed_file.write("\t")
                 parsed_file.write("string " + variable_name)
                 loop_depth_dict.update({"end_string": True})
                 if variable_name not in variables:
-                    variables.append(variable_name)
+                    variables.update({variable_name: "string"})
         except IndexError:
             if not loop_depth_dict.get("end_string"):
                 parsed_file.write(variable_name)
             else:
                 parsed_file.write('"' + variable_name + '";\n')
             if variable_name not in variables:
-                variables.append(variable_name)
+                variables.update({variable_name: "unknown_type"})
     else:
         if word not in pre_line:
             for i in range(int(current_tabs / 4)):
                 parsed_file.write("\t")
             parsed_file.write(variable_name)
             if variable_name not in variables:
-                variables.append(variable_name)
+                variables.update({variable_name: "unknown_type"})
     index += 1
     return True

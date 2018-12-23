@@ -1,9 +1,7 @@
 - functions
-- pointer
 - references 
 - typedef
 - include
 - enum 
 - array
 - lists
-- try/catch

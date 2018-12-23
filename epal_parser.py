@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import re
 import os
@@ -9,7 +10,7 @@ def epal_parser(filename):
         args = [filename, filename.split(".")[0]]
     else:
         args = sys.argv[1:]
-    variables = []
+    variables = {}
     classes = []
     functions = []
     loop_depth_dict = {}
@@ -170,6 +171,22 @@ def epal_parser(filename):
                                     parsed_file.write("}\n")
                                 current_tabs = 0
                                 index += 1
+                            elif word == "ptr":
+                                ptr_count = 0
+                                ptr_type = None
+                                for inner_word in line:
+                                    if inner_word == "ptr":
+                                        ptr_count += 1
+                                if line[ptr_count + 2] in variables.keys():
+                                    ptr_type = variables.get(line[ptr_count + 2])
+                                elif isinstance(line[ptr_count + 2], int):
+                                    ptr_type = "int"
+                                elif isinstance(line[ptr_count + 2], str):
+                                    ptr_type = "string"
+                                parsed_file.write(ptr_type + " " + "*" * ptr_count + line[ptr_count] +
+                                                  " = &" + line[ptr_count + 2] + ";\n")
+                                variables.update({line[ptr_count]: ptr_type + " " + "*" * ptr_count})
+                                break
                             elif word == "tyb" or word == "try":  # try/catch section
                                 parsed_file.write("try{\n")
                                 break
@@ -177,8 +194,15 @@ def epal_parser(filename):
                                 exception_e = None
                                 if line[index + 1:] != "":
                                     exception_e = line[index + 1:]
-                                parsed_file.write("catch (" + " ".join(exception_e) + ") {\n")
+                                parsed_file.write("} catch (" + " ".join(exception_e) + ") {\n")
                                 loop_depth_dict.update({"in_loop": True})
+                                index += 1
+                                break
+                            elif word == "cry":
+                                throw = None
+                                if line[index + 1: ] != "":
+                                    throw = line[index + 1:]
+                                parsed_file.write("throw " + " ".join(throw) + ";\n")
                                 index += 1
                                 break
                             elif word == "for":
@@ -273,7 +297,7 @@ def epal_parser(filename):
                                 exception_e = None
                                 if line[index + 1:] != "":
                                     exception_e = line[index + 1:]
-                                parsed_file.write("catch (" + " ".join(exception_e) + ") {\n")
+                                parsed_file.write("} catch (" + " ".join(exception_e) + ") {\n")
                                 loop_depth_dict.update({"in_loop": True})
                                 index += 1
                                 break
@@ -338,6 +362,9 @@ def epal_parser(filename):
                         else:
                             if "." in word:
                                 parsed_file.write(word + " ")
+                            elif word == "print_val":
+                                parsed_file.write("cout << *" + line[1] + " << endl;")
+                                break
                             elif default_case(parsed_file, word, line, loop_depth_dict, variables,
                                             classes, index, current_tabs, pre_line) is False:
                                 break
