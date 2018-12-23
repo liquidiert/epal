@@ -4,8 +4,10 @@ This is a parser for epal, your friendly, new programming language!
 epal code is easy to write and understand!  
 This parser parses epal code to c++ code and compiles it to binary  
 It also can be executed as pure python module  
-When called in CLI, command should be like following example:  
+When called in CLI, command should be like following example:
+```sh
 python epal_parser.py [epal_file] [binary_filename]  
+```
 epal will be constantly developed and is easily extendable!  
 An IDE will probably provided one day!  
 The .idea folder is a Pycharm project for open source development
@@ -54,7 +56,7 @@ main
 ```
 ## Syntax highlighting
 
-Syntax highlighting is supported in Notepad++ (when using Obsidian as theme)[available as xml export](https://github.com/liquidiert/epal/blob/master/epal_syntax.xml)
+Syntax highlighting is supported in Notepad++ (when using Obsidian as theme) [available as xml export](https://github.com/liquidiert/epal/blob/master/epal_syntax.xml)
 
 ![alt](https://github.com/liquidiert/epal/blob/master/.gitignore/syntax_highlighting.png "syntax highlighting")
 
