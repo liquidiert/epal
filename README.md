@@ -6,7 +6,7 @@ This parser parses epal code to c++ code and compiles it to binary
 It also can be executed as pure python module  
 When called in CLI, command should be like following example:
 ```sh
-python epal_parser.py [epal_file] [binary_filename]  
+python epal_parser.py [epal_file]  
 ```
 epal will be constantly developed and is easily extendable!  
 An IDE will probably provided one day!  
