@@ -24,7 +24,7 @@ cout << "nope" << endl;
 }
 myfirstepalclass scurclass = myfirstepalclass();
 scurclass.var1  = "lol";
-string *ex_ptr = &scurclass.var1;
+string ***ex_ptr = &scurclass.var1;
 cout << *ex_ptr << endl;
 cout << scurclass.var1 << endl;
 switch (scur) {

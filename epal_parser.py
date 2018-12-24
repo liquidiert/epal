@@ -1,4 +1,57 @@
 #!/usr/bin/env python3
+"""
+
+                                                                                                           -.
+                       ` -`                                                       .`
+                        ``+                                                `  `    `
+                       `-.:/                                               :` :  . /
+                        o+:+-                                             `/   ````-`
+                        :hys+`                                            .-       ..`` ` -`
+                        `omds+                                            -.        /..`.`:.
+         :`      -o      -smdh+                                           :`      ` -  :o./.
+          .       ++  `  `+sNdd/  `                                       -`    .`  .``oy/+`
+              `    oo+d+`osshNNm/ `-                                      :    `o` -h.-yhyo
+             ``     sMNNssMNmNMMm/ .`                                     +`  - /..-s./dhyo
+              -o.   `NMMMdNMMMMMMm/`.  `                                  +`  ` odom/-+Ndy+
+              `.+/..-/hMMMMMMMMMMMm/. `                                   /` `.``NhN+ooMdd-
+            ` `-`./oyyohMMMMMMMMMMMms.``                                 `y+ .` .MdMhdhNNh
+            `...:/`.-:hmNMMMMMMMMMMMMhs`  -.    .`         `       `    ` // . ::mNmNNMMMo
+         .`   `.`:o-`.:oNMMMMMMMMMMMMMm+.`-.    y+         .``      `   -`:ssm/d/NNmMMMMm:
+          ..    `..++..-:mMMMMMMMMMMMMMNy-        `         `o.o`- `    .++hNMyhyNddMMMMs`
+           ``.`   `.-yhh:/dMMMMMMMMMMMMMMm/      /s  ``     `    / ` ```:dhhdmmsmNMhMMMd:
+               `.`+y+yMMMh/sMMMMMMMMMMMMMMMy`       .+-     .    ` `.-mhmMmsNNdNMMNNMMMy`
+                `.:yMMMMMNMNNMMMMMMMMMMMMMMMm+```/+---        `  `+.`oMMMMmsMNMMMMMMMMM/
+                   .mNMMMymMMMMMMMMMMMMMMMMMMMmd:sdN-     -/   - `-d./MMMmNdMMMMMMMMMMh.
+                     :sNMMMMMMMMMMMMMMMMMMMMMMMMd.`.  `y. `..-/:`++m:dMMMNMMMMMMMMMMMN/
+                `    .`+dNMNhNMMMMMMMMMMMMMMMMMMMN/o:  `-`-+/ddddm`dhMMMNMMNNMMMMMMMMs.
+             ./    ` `-`.ohmNMMMMMMMMMMMMMMMMMMMMMMMM.   /ys:mMddMsmMMMMMNmNMMMMMMMMd.:
+             -+..- o.sm:..mMMMMMMMMMMMMMMMMMMMMMMMMMMh.symsNhMMNNMmMMMMMNMMMMMMMMMMm. /`
+              -o :/mm:   .odMMMMMMMMMMMMMMMMMMMMMMMMMMNdMssMMMMMMMMMMMMMMMMMMMMMMMm. `
+                   ..   `+NhhMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM/
+               `    `.-ddmmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMo+ ``
+                     :`/mNy+-+mMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNo
+                      ```  oNmo::smMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMo/Nm-
+                        -++ydN-` dmddmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm+.:// -.`+
+                      .o+```..:hhmMMMNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMs.:ho  `-.:-
+                      sNh..` `-:ymMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMo-.+d:   +-
+                    `-/-.     `:yosyNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNs`
+                      `        `/dNdydNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMd/.
+                         `-    `/mMMMMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMd.
+                                `./ymMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNhsymMMMMy`
+                                `/ohNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNsh+ ` `../dMd`
+                            .:osyhmmNMMMMMMMMMMMMMMMMMMMMMdd:://:..`          `/my
+                          `-::/shNNMMMMMMMMMMMMMMMMMMMMho./m                    `sy.
+                       `.:ohmNMMMMMMMMMMNmMMMNMMMMMMM/:`  ./ /`    `              -:
+                  ``-/yhmNMMMMMMMMMMmhhhydyyyhmNMMMNh-.      .
+                 :sdmNMMMMMMMMMNds/..//-/-+/y/yh+ys-` .`     +`
+                .ymMMmdyo+/oy+:.`   ``-:.`  ` `.`: `  `:
+             `.-oso/-.`    `        `  `         :
+            `.```                        `.
+                                         `       +`
+                                              `  .
+                                                                       `
+                                secretone proudly presents
+"""
 import sys
 import re
 import os

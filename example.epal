@@ -18,10 +18,10 @@ main
             end 
         end
     end
-    ptr ex_ptr to scur
-    print_val ex_ptr
     scurclass is myfirstepalclass
     scurclass.var1 is lol
+    ptr ex_ptr to scurclass.var1
+    print_val ex_ptr
     print scurclass.var1
     switch scur
         case 15
