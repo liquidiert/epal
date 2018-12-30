@@ -224,6 +224,7 @@ def epal_parser(filename):
                                     parsed_file.write("}\n")
                                 current_tabs = 0
                                 index += 1
+                            # ptr and ref section
                             elif word == "ptr":
                                 ptr_count = 0
                                 ptr_type = None
@@ -240,6 +241,19 @@ def epal_parser(filename):
                                                   " = &" + line[ptr_count + 2] + ";\n")
                                 variables.update({line[ptr_count]: ptr_type + " " + "*" * ptr_count})
                                 break
+                            elif word == "ref":
+                                ref_type = None
+                                if line[3] in variables.keys():
+                                    ref_type = variables.get(line[3])
+                                elif isinstance(line[3], int):
+                                    ref_type = "int"
+                                elif isinstance(line[3], str):
+                                    ref_type = "string"
+                                parsed_file.write(ref_type + " &" + line[1] +
+                                                  " = " + line[3] + ";\n")
+                                variables.update({line[1]: ref_type + " &"})
+                                break
+                            # exception section
                             elif word == "tyb" or word == "try":  # try/catch section
                                 parsed_file.write("try{\n")
                                 break
@@ -316,6 +330,9 @@ def epal_parser(filename):
                             elif word == "case":
                                 parsed_file.write("case " + str(line[index + 1]) + ":\n")
                                 index += 1
+                            elif word == "need":
+                                parsed_file.write("#include <" + line[1] + ">\n")
+                                break
                             else:
                                 if default_case(parsed_file, word, line, loop_depth_dict, variables,
                                                 classes, index, current_tabs, pre_line) is False:
@@ -381,6 +398,9 @@ def epal_parser(filename):
                                 index += 1
                             elif word == "range":
                                 index += 1
+                            elif word == "ineed":
+                                parsed_file.write('#include "' + line[1] + '"\n')
+                                break
                             else:
                                 if default_case(parsed_file, word, line, loop_depth_dict, variables,
                                                 classes, index, current_tabs, pre_line) is False:
@@ -407,6 +427,9 @@ def epal_parser(filename):
                                     parsed_file.write("\t")
                                 index += 1
                                 break
+                            elif word == "import":
+                                parsed_file.write("#include " + line[1] + "\n")
+                                break
                             else:
                                 if default_case(parsed_file, word, line, loop_depth_dict, variables,
                                                 classes, index, current_tabs, pre_line) is False:
@@ -417,6 +440,9 @@ def epal_parser(filename):
                                 parsed_file.write(word + " ")
                             elif word == "print_val":
                                 parsed_file.write("cout << *" + line[1] + " << endl;\n")
+                                break
+                            elif word == "include":
+                                parsed_file.write("#include " + line[1] + "\n")
                                 break
                             elif default_case(parsed_file, word, line, loop_depth_dict, variables,
                                             classes, index, current_tabs, pre_line) is False:

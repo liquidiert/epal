@@ -1,5 +1,7 @@
 #include <iostream>
 using namespace std;
+#include <string>
+#include <vector>
 class myfirstepalclass  {
 private:
 int privatevar1 = 0;
@@ -24,9 +26,11 @@ cout << "nope" << endl;
 }
 myfirstepalclass scurclass = myfirstepalclass();
 scurclass.var1  = "lol";
-string ***ex_ptr = &scurclass.var1;
-cout << *ex_ptr << endl;
 cout << scurclass.var1 << endl;
+string *ex_ptr = &scurclass.var1;
+cout << *ex_ptr << endl;
+int &ex_ref = scur;
+cout << ex_ref << endl;
 switch (scur) {
 case 15:
 cout << "sucess" << endl;

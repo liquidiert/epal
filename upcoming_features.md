@@ -1,7 +1,5 @@
 - functions
-- references 
 - typedef
-- include
 - enum 
 - array
 - lists
