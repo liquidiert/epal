@@ -55,32 +55,37 @@
 import sys
 import re
 import os
-from default_case import default_case
+from default_case import *
 
 
-def epal_parser(filename):
+def epal_parser(filename=None):
     if filename is not None:
         args = [filename, filename.split(".")[0]]
     else:
         args = sys.argv[1:]
+
+    # dicts and lists for temp storing vars, etc.
     variables = {}
     classes = []
-    functions = []
+    functions = {}
     loop_depth_dict = {}
+
+    # further preconditions
+    line_index = 0
+    pre_line = None
+    block_comment_index = 0
+    current_tabs = 0
     with open(args[0], 'r') as parse_file:
-        with open(args[1] + ".cpp", 'w+') as parsed_file:
+        with open(args[1], 'w+') as parsed_file:
+            # always needed
             parsed_file.write("#include <iostream>\nusing namespace std;\n")
-            pre_line = None
-            block_comment_index = 0
-            current_tabs = 0
             for line in parse_file:
                 index = 0
                 line = line.split()
                 if loop_depth_dict.get("block_comment"):
-                    if "end" in line:
+                    if "*/" in line:
                         parsed_file.write("*/\n")
                         loop_depth_dict.update({"block_comment": False})
-                        break
                     elif block_comment_index == 1:
                         comments = " ".join(line[1:])
                         parsed_file.write(comments + "\n")
@@ -267,7 +272,7 @@ def epal_parser(filename):
                                 break
                             elif word == "cry":
                                 throw = None
-                                if line[index + 1: ] != "":
+                                if line[index + 1:] != "":
                                     throw = line[index + 1:]
                                 parsed_file.write("throw " + " ".join(throw) + ";\n")
                                 index += 1
@@ -327,6 +332,14 @@ def epal_parser(filename):
                                 for i in range(int(current_tabs / 4)):
                                     parsed_file.write("\t")
                                 index += 1
+                            elif word == "func":
+                                functions[line[1]] = "void"  # add function with name and return type
+                                parsed_file.write(f"{functions[line[1]]} {line[1]} (")
+                                func_args = [arg.split(":") for arg in line[2:]]
+                                for arg in func_args:
+                                    parsed_file.write(f" {arg[1]} {arg[0]} ")
+                                parsed_file.write(") {\n")
+                                break
                             elif word == "case":
                                 parsed_file.write("case " + str(line[index + 1]) + ":\n")
                                 index += 1
@@ -372,7 +385,13 @@ def epal_parser(filename):
                                 index += 1
                                 break
                             elif word == "print":  # builtins
+                                # preconditions
                                 class_var = None
+                                if "+" in line:
+                                    line.remove("print")
+                                    line = "".join(line)
+                                    line = line.split("+")
+                                    del line[0]
                                 try:
                                     class_var = line[index + 1].split(".")[1]
                                 except IndexError:
@@ -380,15 +399,15 @@ def epal_parser(filename):
                                 if line[index + 1] in variables:
                                     for i in range(int(current_tabs / 4)):
                                         parsed_file.write("\t")
-                                    parsed_file.write("cout << " + line[index + 1] + " << endl;\n")
+                                    parsed_file.write(f"cout << {line[index + 1]} << endl;\n")
                                 elif class_var in variables:
                                     for i in range(int(current_tabs / 4)):
                                         parsed_file.write("\t")
-                                    parsed_file.write("cout << " + line[index + 1] + " << endl;\n")
+                                    parsed_file.write(f"cout << {line[index + 1]} << endl;\n")
                                 else:
                                     for i in range(int(current_tabs / 4)):
                                         parsed_file.write("\t")
-                                    parsed_file.write('cout << "' + line[index + 1] + '" << endl;\n')
+                                    parsed_file.write(f'cout << "{line[index + 1]}" << endl;\n')
                                 index += 1
                                 break
                             elif word == "break":
@@ -445,13 +464,13 @@ def epal_parser(filename):
                                 parsed_file.write("#include " + line[1] + "\n")
                                 break
                             elif default_case(parsed_file, word, line, loop_depth_dict, variables,
-                                            classes, index, current_tabs, pre_line) is False:
+                                              classes, index, current_tabs, pre_line) is False:
                                 break
+                line_index += 1
                 pre_line = line
             parsed_file.write("\treturn 0;\n}")
-    temp = args[0].split('.')[0]
     os.system("g++ -std=c++17 -g " + args[1] + ".cpp -o " + args[1])
 
 
 if __name__ == "__main__":
-    epal_parser("example.epal")
+    epal_parser()

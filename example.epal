@@ -6,6 +6,13 @@ class myfirstepalclass
         var1 is hallo
 end 
 // example comment
+
+
+func test_func var1:int var2:string
+    print var1 + var2 + test string concat
+end
+
+
 main 
     scur is 5
     i is 40
@@ -36,6 +43,7 @@ main
             break
     end
     print scur
+    test_func scur helloooo
 /* 
     and a neatly block comment
 */
